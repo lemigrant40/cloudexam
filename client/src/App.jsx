@@ -6,7 +6,9 @@ import QuestionScreen from './components/QuestionScreen';
 import ResultsScreen from './components/ResultsScreen';
 import FinishedScreen from './components/FinishedScreen';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+//const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+// Si estamos en producción (AWS), usa la misma dirección de la web. Si es local, usa el puerto 3000.
+const SOCKET_URL = import.meta.env.PROD ? window.location.origin : 'http://localhost:3000';
 
 function App() {
   const [socket, setSocket] = useState(null);
