@@ -18,10 +18,13 @@ const __dirname = dirname(__filename);
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
+  path: '/socket.io',
   cors: {
-    origin: "*", 
+    origin: "*",
     methods: ['GET', 'POST']
-  }
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
 
 // Middleware
@@ -251,6 +254,11 @@ function shuffleArray(array) {
 // Socket.io event handlers
 io.on('connection', (socket) => {
   console.log(`🔌 Client connected: ${socket.id}`);
+  console.log(`   Transport: ${socket.conn.transport.name}`);
+
+  socket.on('error', (error) => {
+    console.error(`❌ Socket error for ${socket.id}:`, error);
+  });
 
   // Create room (Host)
   socket.on('room:create', ({ playerName, questionRange }, callback) => {
@@ -622,7 +630,22 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     rooms: rooms.size,
     questions: questions.length,
+    environment: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Root API endpoint for debugging
+app.get('/api', (req, res) => {
+  res.json({
+    name: 'CloudExam Prep API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      rooms: '/api/rooms',
+      questionCount: '/api/questions/count'
+    }
   });
 });
 

@@ -27,20 +27,40 @@ function App() {
   // Initialize socket connection
   useEffect(() => {
     const newSocket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling']
+      path: '/socket.io',
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
+      timeout: 20000
     });
 
     newSocket.on('connect', () => {
-      console.log('✅ Connected to server');
+      console.log('✅ Connected to server:', SOCKET_URL);
+      setError(''); // Clear any previous errors
     });
 
-    newSocket.on('disconnect', () => {
-      console.log('🔌 Disconnected from server');
+    newSocket.on('disconnect', (reason) => {
+      console.log('🔌 Disconnected from server:', reason);
+      if (reason === 'io server disconnect') {
+        // Server disconnected, try to reconnect
+        newSocket.connect();
+      }
     });
 
     newSocket.on('connect_error', (err) => {
-      console.error('Connection error:', err);
-      setError('Unable to connect to server');
+      console.error('❌ Connection error:', err.message);
+      console.error('Socket URL:', SOCKET_URL);
+      setError(`Unable to connect to server: ${err.message}`);
+    });
+
+    newSocket.on('reconnect_attempt', (attemptNumber) => {
+      console.log(`🔄 Reconnection attempt ${attemptNumber}`);
+    });
+
+    newSocket.on('reconnect_failed', () => {
+      console.error('❌ Reconnection failed');
+      setError('Failed to reconnect to server. Please refresh the page.');
     });
 
     setSocket(newSocket);
@@ -52,14 +72,24 @@ function App() {
 
   // Fetch total questions from backend
   useEffect(() => {
+    console.log('📡 Fetching question count from:', `${SOCKET_URL}/api/questions/count`);
     fetch(`${SOCKET_URL}/api/questions/count`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         if (data.total) {
+          console.log(`✅ Loaded ${data.total} questions`);
           setTotalQuestions(data.total);
         }
       })
-      .catch(err => console.error('Error fetching question count:', err));
+      .catch(err => {
+        console.error('❌ Error fetching question count:', err);
+        // Don't set error state here, as this is not critical
+      });
   }, []);
 
   // Save language preference
