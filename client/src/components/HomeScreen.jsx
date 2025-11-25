@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Users, LogIn, BookOpen, ListOrdered, Hash, Globe } from 'lucide-react';
 import { t } from '../i18n/translations';
+import logo from '../assets/logo.png';
 
 function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, setLanguage }) {
   const [mode, setMode] = useState(null); // null, 'create', 'join'
@@ -49,6 +50,11 @@ function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, 
   if (mode === null) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
+        {/* Logo in top-right corner */}
+        <div className="absolute top-6 right-6">
+          <img src={logo} alt="Cloudera Logo" className="h-12 w-auto" />
+        </div>
+
         <div className="max-w-2xl w-full">
           {/* Language Selector */}
           <div className="flex justify-end mb-6">
@@ -84,7 +90,7 @@ function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, 
               <BookOpen className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-5xl font-bold text-white mb-4">
-              {t('appTitle', language)}
+              Cloudera CDP Practice Test
             </h1>
             <p className="text-xl text-slate-300">
               {t('appDescription', language)}
@@ -139,6 +145,11 @@ function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, 
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      {/* Logo in top-right corner */}
+      <div className="absolute top-6 right-6">
+        <img src={logo} alt="Cloudera Logo" className="h-12 w-auto" />
+      </div>
+
       <div className="max-w-2xl w-full">
         <div className="bg-slate-800 border-2 border-slate-700 rounded-2xl p-8">
           {/* Header */}

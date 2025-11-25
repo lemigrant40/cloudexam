@@ -1,5 +1,6 @@
 import { Users, Copy, Check, Play, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import logo from '../assets/logo.png';
 
 function Lobby({ roomData, isHost, onStartGame, onLeave }) {
   const [copied, setCopied] = useState(false);
@@ -12,6 +13,11 @@ function Lobby({ roomData, isHost, onStartGame, onLeave }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      {/* Logo in top-right corner */}
+      <div className="absolute top-6 right-6">
+        <img src={logo} alt="Cloudera Logo" className="h-12 w-auto" />
+      </div>
+
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">

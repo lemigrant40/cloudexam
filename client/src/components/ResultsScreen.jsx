@@ -1,4 +1,5 @@
 import { CheckCircle, XCircle, Users, ArrowRight, BarChart3 } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 function ResultsScreen({ results, isHost, onNextQuestion }) {
   if (!results) {
@@ -14,6 +15,11 @@ function ResultsScreen({ results, isHost, onNextQuestion }) {
 
   return (
     <div className="min-h-screen p-4 py-8">
+      {/* Logo in top-right corner */}
+      <div className="absolute top-6 right-6">
+        <img src={logo} alt="Cloudera Logo" className="h-12 w-auto" />
+      </div>
+
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

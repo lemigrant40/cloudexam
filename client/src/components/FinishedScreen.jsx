@@ -1,8 +1,14 @@
 import { Trophy, Home } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 function FinishedScreen({ roomData, onBackToHome }) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      {/* Logo in top-right corner */}
+      <div className="absolute top-6 right-6">
+        <img src={logo} alt="Cloudera Logo" className="h-12 w-auto" />
+      </div>
+
       <div className="max-w-2xl w-full text-center">
         {/* Trophy Icon */}
         <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl mb-6 animate-bounce">

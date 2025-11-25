@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, Users, Clock, Pause, Play, XCircle } from 'lucide-react';
 import Timer from './Timer';
 import { t } from '../i18n/translations';
+import logo from '../assets/logo.png';
 
 function QuestionScreen({ question, roomData, voteCount, hasAnswered, onSubmitAnswer, socket, isHost, language }) {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
@@ -112,6 +113,11 @@ function QuestionScreen({ question, roomData, voteCount, hasAnswered, onSubmitAn
 
   return (
     <div className="min-h-screen p-4 py-8">
+      {/* Logo in top-right corner */}
+      <div className="absolute top-6 right-6">
+        <img src={logo} alt="Cloudera Logo" className="h-12 w-auto" />
+      </div>
+
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
