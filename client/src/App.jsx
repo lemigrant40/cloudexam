@@ -37,11 +37,15 @@ function App() {
   useEffect(() => {
     const newSocket = io(SOCKET_URL, {
       path: '/socket.io',
-      transports: ['websocket', 'polling'],
+      // AWS App Runner proxy doesn't support WebSocket upgrade properly
+      // Use polling first, then upgrade if possible
+      transports: ['polling', 'websocket'],
+      upgrade: true,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
-      timeout: 20000
+      timeout: 20000,
+      forceNew: true
     });
 
     newSocket.on('connect', () => {
