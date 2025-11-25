@@ -672,11 +672,15 @@ if (process.env.NODE_ENV === 'production') {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-httpServer.listen(PORT, () => {
+const HOST = process.env.HOST || '0.0.0.0'; // Listen on all interfaces for AWS
+
+httpServer.listen(PORT, HOST, () => {
   console.log('═══════════════════════════════════════════════════════');
-  console.log(`🚀 CloudExam Prep Server running on port ${PORT}`);
+  console.log(`🚀 CloudExam Prep Server running on ${HOST}:${PORT}`);
   console.log(`📚 ${questions.length} questions loaded`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔌 Socket.io path: /socket.io`);
+  console.log(`🌐 CORS: Enabled for all origins`);
   console.log('═══════════════════════════════════════════════════════');
 });
 
