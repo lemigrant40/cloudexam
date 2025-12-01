@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Users, LogIn, BookOpen, ListOrdered, Hash, Globe } from 'lucide-react';
+import { Users, LogIn, BookOpen, ListOrdered, Hash, Globe, Award } from 'lucide-react';
 import { t } from '../i18n/translations';
 import logo from '../assets/logo.png';
 
-function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, setLanguage }) {
+function HomeScreen({ onCreateRoom, onJoinRoom, onStartExam, totalQuestions = 349, language, setLanguage }) {
   const [mode, setMode] = useState(null); // null, 'create', 'join'
   const [name, setName] = useState('');
   const [roomCode, setRoomCode] = useState('');
@@ -98,7 +98,7 @@ function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, 
           </div>
 
           {/* Action Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
             {/* Create Room */}
             <button
               onClick={() => setMode('create')}
@@ -131,6 +131,36 @@ function HomeScreen({ onCreateRoom, onJoinRoom, totalQuestions = 349, language, 
               </div>
             </button>
           </div>
+
+          {/* Exam Mode Card */}
+          <button
+            onClick={onStartExam}
+            className="group w-full bg-gradient-to-r from-orange-900/50 to-red-900/50 hover:from-orange-800/60 hover:to-red-800/60 border-2 border-orange-500 hover:border-orange-400 rounded-2xl p-8 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                  <Award className="w-8 h-8 text-white" />
+                </div>
+                <div className="text-left">
+                  <h2 className="text-2xl font-bold text-white mb-1">
+                    {language === 'es' ? 'Modo Examen' : 'Exam Mode'}
+                  </h2>
+                  <p className="text-orange-200 text-sm">
+                    {language === 'es'
+                      ? 'Simulador oficial CDP Admin - 80 preguntas, 90 minutos'
+                      : 'Official CDP Admin Simulator - 80 questions, 90 minutes'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center bg-orange-500/20 rounded-xl p-4 min-w-[120px]">
+                <span className="text-orange-300 text-xs uppercase font-semibold mb-1">
+                  {language === 'es' ? 'Aprobación' : 'Pass Score'}
+                </span>
+                <span className="text-white text-3xl font-bold">60%</span>
+              </div>
+            </div>
+          </button>
 
           {/* Footer */}
           <div className="text-center mt-12">

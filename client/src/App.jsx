@@ -5,6 +5,7 @@ import Lobby from './components/Lobby';
 import QuestionScreen from './components/QuestionScreen';
 import ResultsScreen from './components/ResultsScreen';
 import FinishedScreen from './components/FinishedScreen';
+import ExamMode from './components/ExamMode';
 
 // Socket URL configuration
 // En producción (cuando no es localhost), usa el mismo origen que la web
@@ -21,7 +22,7 @@ console.log('🌐 Environment:', {
 
 function App() {
   const [socket, setSocket] = useState(null);
-  const [gameState, setGameState] = useState('home'); // home, lobby, question, results, finished
+  const [gameState, setGameState] = useState('home'); // home, lobby, question, results, finished, exam
   const [roomData, setRoomData] = useState(null);
   const [isHost, setIsHost] = useState(false);
   const [playerName, setPlayerName] = useState('');
@@ -307,6 +308,7 @@ function App() {
         <HomeScreen
           onCreateRoom={handleCreateRoom}
           onJoinRoom={handleJoinRoom}
+          onStartExam={() => setGameState('exam')}
           totalQuestions={totalQuestions}
           language={language}
           setLanguage={setLanguage}
@@ -347,6 +349,12 @@ function App() {
         <FinishedScreen
           roomData={roomData}
           onBackToHome={resetToHome}
+        />
+      )}
+
+      {gameState === 'exam' && (
+        <ExamMode
+          onExit={resetToHome}
         />
       )}
     </div>

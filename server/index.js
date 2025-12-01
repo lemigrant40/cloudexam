@@ -663,6 +663,69 @@ app.get('/api/questions/count', (req, res) => {
   });
 });
 
+// API endpoint to get exam questions (80 questions distributed by category)
+app.get('/api/questions/exam', (req, res) => {
+  try {
+    const EXAM_CONFIG = {
+      totalQuestions: 80,
+      categories: {
+        "Architecture": 11,              // 14% of 80 = 11.2
+        "High Availability": 10,         // 12.5% of 80 = 10
+        "Installation": 10,              // 12.5% of 80 = 10
+        "Governance": 8,                 // 10% of 80 = 8
+        "Capacity Management": 8,        // 10% of 80 = 8
+        "Cluster Maintenance": 5,        // 6% of 80 = 4.8
+        "HDFS Administration": 8,        // 10% of 80 = 8
+        "YARN Administration": 8         // 10% of 80 = 8
+      }
+    };
+
+    // Group questions by category
+    const questionsByCategory = {};
+    questions.forEach(q => {
+      const category = q.category || 'Architecture';
+      if (!questionsByCategory[category]) {
+        questionsByCategory[category] = [];
+      }
+      questionsByCategory[category].push(q);
+    });
+
+    // Select questions for each category
+    const examQuestions = [];
+    Object.entries(EXAM_CONFIG.categories).forEach(([category, count]) => {
+      const availableQuestions = questionsByCategory[category] || [];
+
+      // Shuffle and select required number of questions
+      const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, Math.min(count, shuffled.length));
+      examQuestions.push(...selected);
+    });
+
+    // If we don't have enough questions, fill with random ones
+    if (examQuestions.length < EXAM_CONFIG.totalQuestions) {
+      const remaining = EXAM_CONFIG.totalQuestions - examQuestions.length;
+      const usedIds = new Set(examQuestions.map(q => q.id));
+      const unusedQuestions = questions.filter(q => !usedIds.has(q.id));
+      const shuffled = [...unusedQuestions].sort(() => Math.random() - 0.5);
+      examQuestions.push(...shuffled.slice(0, remaining));
+    }
+
+    // Final shuffle to mix categories
+    const finalExamQuestions = examQuestions.sort(() => Math.random() - 0.5);
+
+    console.log(`📝 Generated exam with ${finalExamQuestions.length} questions`);
+
+    res.json({
+      questions: finalExamQuestions,
+      config: EXAM_CONFIG,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error generating exam questions:', error);
+    res.status(500).json({ error: 'Failed to generate exam questions' });
+  }
+});
+
 // Serve React app in production
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
