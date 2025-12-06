@@ -3058,9 +3058,11 @@
     "id": 186,
     "question": "You are using the Cloudera Manager API to create a new Hive service within an existing cluster named\n'MyCluster'. Which of the following JSON payloads is the most correct and complete (assuming a valid\nAPI version and authentication) for creating the Hive service with default settings, including necessary\ndependencies?",
     "options": {
-      "A": "B.",
-      "C": "D.",
-      "E": "Answer: E"
+      "A": "{'name': 'hive', 'type': 'HIVE'}",
+      "B": "{'name': 'hive', 'type': 'HIVE', 'clusterName': 'MyCluster'}", 
+      "C": "{'service': {'name': 'hive', 'type': 'HIVE'}}",
+      "D": "{'name': 'hive', 'type': 'HIVE', 'roleTypes': ['HIVEMETASTORE', 'HIVESERVER2', 'WEBHCAT' ]}",
+      "E": "{'name': 'hive', 'type': 'HIVE', 'clusterName': 'MyCluster', 'dependencies': [{'serviceName': 'hdfs'}]}"
     },
     "correctAnswers": [
       "E"
@@ -3090,11 +3092,11 @@
     "id": 188,
     "question": "You're managing a Cloudera Data Platform (CDP) cluster and want to use the Cloudera Manager REST\nAPI to retrieve a list of all active YARN applications along with their resource usage (CPU, memory). How\ncan you achieve this using the API?",
     "options": {
-      "A": "Option A",
-      "B": "Option B",
-      "C": "Option C",
-      "D": "Option D",
-      "E": "Option E"
+      "A": "Use the /api/v32/clusters/{clusterName}/yarn/applications endpoint. This provides a list of YARN applications and their resource usage details.",
+      "B": "Use the /api/v32/yarn/applications endpoint. This retrieves all YARN applications across all clusters managed by the Cloudera Manager.",
+      "C": "Iterate through each YARN service instance using /api/v32/clusters/{clusterName}/services/{yarnServiceName}/resourceUsage and aggregate the application data.",
+      "D": "Use the /api/v32/clusters/{clusterName}/services/{yarnServiceName}/applications endpoint and filter the results for active applications.",
+      "E": "Use the /api/v32/clusters/{clusterName}/services/{yarnServiceName}/resourceUtilization endpoint to check resource availability, and use /api/v32/yarn/applications to see all the running apps."
     },
     "correctAnswers": [
       "D"
@@ -3124,11 +3126,11 @@
     "id": 190,
     "question": "You are using the Cloudera Manager REST API to retrieve the configuration history for the HDFS service.\nYou need to filter the results to only show changes made by a specific user, 'admin', within the last 24\nhours. How can you achieve this?",
     "options": {
-      "A": "Option A",
-      "B": "Option B",
-      "C": "Option C",
-      "D": "Option D",
-      "E": "Option E"
+      "A": "Use the /api/v32/clusters/{clusterName}/services/{serviceName}/configHistory endpoint and include the query parameters user=admin&timeframe=24h.",
+      "B": "Use the /api/v32/clusters/{clusterName}/services/{serviceName}/configHistory endpoint and filter the results programmatically after retrieving all configuration history.",
+      "C": "Use the /api/v32/clusters/{clusterName}/services/{serviceName}/configHistory endpoint and include the query parameters filter=user:admin,timeframe:24h.",
+      "D": "Use the /api/v32/audit endpoint and filter by service name, user, and time range.",
+      "E": "You cannot filter the configuration history by user or time range using the Cloudera Manager REST API."
     },
     "correctAnswers": [
       "B"
@@ -3172,16 +3174,15 @@
     "id": 193,
     "question": "You're tasked with automating the creation of a new Cloudera Manager user with specific roles and\npermissions using the REST API. You need to create a user 'data_analyst' with 'Read-Only' access to the\n'MyCluster' cluster and 'Operator' access to the 'Hive' service. Which of the following API call(s) and\nbody structures would accomplish this? Note that a single user creation might require multiple API calls\nto set all the desired permissions.",
     "options": {
-      "A": "Option A",
-      "B": "Option B",
-      "C": "Option C",
-      "D": "Option D",
-      "E": "Option E"
-    },
+      "A": "POST to /api/v32/users with body: {'name': 'data_analyst', 'password': 'password123', 'roles': [{'name': 'ReadOnly', 'scope': 'CLUSTER', 'entityName': 'MyCluster'}, {'name': 'Operator', 'scope': 'SERVICE', 'entityName': 'Hive'}]}",
+      "B": "POST to /api/v32/users with body: {'name': 'data_analyst', 'password': 'password123'} 2. POST to /api/v32/users/data_analyst/roles with body: {'name': 'ReadOnly', 'scope': 'CLUSTER', 'entityName': 'MyCluster'} 3. POST to /api/v32/users/data_analyst/roles with body: {'name': 'Operator', 'scope': 'SERVICE', 'entityName': 'Hive'}",
+      "C": "POST to /api/v32/users with body: {'name': 'data_analyst', password: password123}. 2. PUT to /api/v32/clusters/MyCluster/users/data_analyst/roles with body: {'roleName': 'ReadOnly'} 3. PUT to /api/v32/services/Hive/users/data_analyst/roles with body: {'roleName': 'Operator'}",
+      "D": "POST to /api/v32/users with body: {'name': 'data_analyst', 'password': 'password123'}. 2. POST to /api/v32/clusters/MyCluster/users/data_analyst/roles with body: {'roleName': 'ReadOnly'} 3. POST to /api/v32/services/Hive/users/data_analyst/roles with body: {'roleName': 'Operator'}"
+      },
     "correctAnswers": [
       "B"
     ],
-    "explanation": "",
+    "explanation": "The correct approach involves first creating the user using POST to /api/v32/users. Then, you need to make separate POST requests to /api/v32/users/{username}/roles to assign each role individually. The request body should specify the role name, scope (CLUSTER or SERVICE), and the entity name (cluster or service name). Role assignments require separate calls per role.",
     "category": "Architecture"
   },
   {
